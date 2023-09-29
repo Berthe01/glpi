@@ -791,6 +791,14 @@ class Rule extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '1234', //Don't know how to determine this ID
+            'table'              => $this->getTable(),
+            'field'              => 'sub_type',
+            'name'               => __('Subtype'),
+            'datatype'           => 'text'
+        ];
+
+        $tab[] = [
             'id'                 => '80',
             'table'              => 'glpi_entities',
             'field'              => 'completename',
