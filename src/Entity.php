@@ -2701,11 +2701,36 @@ class Entity extends CommonTreeDropdown
     /**
      * @since 0.84 (before in entitydata.class)
      *
+     * B01 - Add the ability to match on a list of semicolon separated domain list
      * @param $value
      **/
     public static function getEntityIDByDomain($value)
     {
-        return self::getEntityIDByField("mail_domain", $value);
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => ['id' , 'mail_domain'],
+            'FROM'   => self::getTable(),
+            'WHERE'     => [
+                'mail_domain' => ['LIKE', '%' . $value . '%'],
+            ]
+        ]);
+
+        if (count($iterator) > 0) {
+            foreach ($iterator as $result) {
+                error_log('getEntityIDByDomain result' . print_r($result, true));
+                if (str_contains($result['mail_domain'], ';')) {
+                    if (in_array($value, explode(';', $result['mail_domain']))) {
+                        return $result['id'];
+                    }
+                } else {
+                    if ($result['mail_domain'] == $value) {
+                        return $result['id'];
+                    }
+                }
+            }
+        }  
+        return -1;
     }
 
 
